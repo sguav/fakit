@@ -1,6 +1,8 @@
-import argparse
 import git
+import argparse
 import sys
+import random
+import string
 from collections import OrderedDict
 
 def list_commits(repo):
@@ -9,6 +11,15 @@ def list_commits(repo):
         print(f"{idx}: {c.hexsha[:8]} {c.author.name} <{c.author.email}> {c.summary}")
     return commits
 
+def random_string(length=6):
+    return ''.join(random.choices(string.ascii_lowercase, k=length))
+
+def generate_random_author(old_name, old_email):
+    domain = old_email.split("@")[-1] if "@" in old_email else "example.com"
+    new_name = f"{random_string(5).capitalize()} {random_string(7).capitalize()}"
+    new_email = f"{random_string(8)}@{domain}"
+    return new_name, new_email
+
 def change_authors(repo, commits):
     # Collect unique authors (preserve order)
     authors = OrderedDict()
@@ -16,35 +27,45 @@ def change_authors(repo, commits):
         key = (c.author.name, c.author.email)
         authors[key] = None
 
-    replacements = {}
-    print("\nProvide new author info (leave blank to skip/change nothing):")
-    for name, email in authors.keys():
-        print(f"\nOriginal author: {name} <{email}>")
-        new_name = input(f"  New name [{name}]: ").strip() or name
-        new_email = input(f"  New email [{email}]: ").strip() or email
-        replacements[(name, email)] = (new_name, new_email)
+    # Ask for randomization
+    randomize = input("Randomize author names/emails? [y/N]: ").strip().lower() == 'y'
 
-    # Apply changes via git filter-branch
-    print("\nRewriting commits... (this is destructive, make a backup first!)")
-    for old, new in replacements.items():
-        old_name, old_email = old
-        new_name, new_email = new
-        if (old_name, old_email) == (new_name, new_email):
-            continue  # skip unchanged
-        repo.git.filter_branch(
-            "--env-filter",
-            f'''
+    replacements = {}
+    for old_name, old_email in authors.keys():
+        if randomize:
+            new_name, new_email = generate_random_author(old_name, old_email)
+            print(f"Randomized: {old_name} <{old_email}> -> {new_name} <{new_email}>")
+        else:
+            print(f"\nOriginal author: {old_name} <{old_email}>")
+            new_name = input(f"  New name [{old_name}]: ").strip() or old_name
+            new_email = input(f"  New email [{old_email}]: ").strip() or old_email
+        replacements[(old_name, old_email)] = (new_name, new_email)
+
+    # Build a single --env-filter script
+    env_filter_lines = []
+    for (old_name, old_email), (new_name, new_email) in replacements.items():
+        if (old_name, old_email) != (new_name, new_email):
+            env_filter_lines.append(f'''
 if [ "$GIT_AUTHOR_NAME" = "{old_name}" ] && [ "$GIT_AUTHOR_EMAIL" = "{old_email}" ]; then
     export GIT_AUTHOR_NAME="{new_name}"
     export GIT_AUTHOR_EMAIL="{new_email}"
     export GIT_COMMITTER_NAME="{new_name}"
     export GIT_COMMITTER_EMAIL="{new_email}"
 fi
-''',
-            "--tag-name-filter", "cat", "--", "--all"
-        )
+''')
+    env_filter_script = "\n".join(env_filter_lines)
 
+    if env_filter_script.strip() == "":
+        print("No changes to apply. Exiting.")
+        return
+
+    print("\nRewriting commits in a single pass... (destructive, make a backup!)")
+    repo.git.filter_branch(
+        "--env-filter", env_filter_script,
+        "--tag-name-filter", "cat", "--", "--all"
+    )
     print("\nDone. Remember: force-push if it's a remote repo!")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Fakit - Fake git repo automation tool")

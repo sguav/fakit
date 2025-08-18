@@ -1,0 +1,11 @@
+*
+*/**
+
+!.gitignore
+!fakit/
+!fakit/*
+
+!README.md
+!requirements.txt
+!setup.sh
+!setup.py

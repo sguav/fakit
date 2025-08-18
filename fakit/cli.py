@@ -1,6 +1,7 @@
 import argparse
 import git
 import sys
+from collections import OrderedDict
 
 def list_commits(repo):
     commits = list(repo.iter_commits('--all'))
@@ -9,22 +10,41 @@ def list_commits(repo):
     return commits
 
 def change_authors(repo, commits):
-    new_name = input("New author name: ").strip()
-    new_email = input("New author email: ").strip()
-    print("Rewriting commits...")
+    # Collect unique authors (preserve order)
+    authors = OrderedDict()
+    for c in commits:
+        key = (c.author.name, c.author.email)
+        authors[key] = None
 
-    # Use filter-branch equivalent via git command
-    # This is destructive, create a backup first!
-    repo.git.filter_branch(
-        "--env-filter",
-        f'export GIT_AUTHOR_NAME="{new_name}"; '
-        f'export GIT_AUTHOR_EMAIL="{new_email}"; '
-        f'export GIT_COMMITTER_NAME="{new_name}"; '
-        f'export GIT_COMMITTER_EMAIL="{new_email}"; ',
-        "--tag-name-filter", "cat", "--", "--all"
-    )
+    replacements = {}
+    print("\nProvide new author info (leave blank to skip/change nothing):")
+    for name, email in authors.keys():
+        print(f"\nOriginal author: {name} <{email}>")
+        new_name = input(f"  New name [{name}]: ").strip() or name
+        new_email = input(f"  New email [{email}]: ").strip() or email
+        replacements[(name, email)] = (new_name, new_email)
 
-    print("Done. Remember: force-push if it's a remote repo!")
+    # Apply changes via git filter-branch
+    print("\nRewriting commits... (this is destructive, make a backup first!)")
+    for old, new in replacements.items():
+        old_name, old_email = old
+        new_name, new_email = new
+        if (old_name, old_email) == (new_name, new_email):
+            continue  # skip unchanged
+        repo.git.filter_branch(
+            "--env-filter",
+            f'''
+if [ "$GIT_AUTHOR_NAME" = "{old_name}" ] && [ "$GIT_AUTHOR_EMAIL" = "{old_email}" ]; then
+    export GIT_AUTHOR_NAME="{new_name}"
+    export GIT_AUTHOR_EMAIL="{new_email}"
+    export GIT_COMMITTER_NAME="{new_name}"
+    export GIT_COMMITTER_EMAIL="{new_email}"
+fi
+''',
+            "--tag-name-filter", "cat", "--", "--all"
+        )
+
+    print("\nDone. Remember: force-push if it's a remote repo!")
 
 def main():
     parser = argparse.ArgumentParser(description="Fakit - Fake git repo automation tool")

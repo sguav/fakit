@@ -4,10 +4,16 @@
 !.gitignore
 !fakit/
 !fakit/*
+!tests/
+!tests/*
+
+# Always ignore __pycache__/
 __pycache__/
 __pycache__/*
 
 !README.md
 !requirements.txt
+!requirements-dev.txt
 !setup.sh
 !setup.py
+!pytest.ini

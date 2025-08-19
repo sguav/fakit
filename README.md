@@ -1,12 +1,14 @@
 # Fakit
 
-**fakit** is a command-line tool designed to automate the anonymization and modification of Git repositories. It allows users to:
+**Fakit** is a simple tool to batch-manipulate Git repositories, allowing you to:
 
-* Randomize commit authorship (names and emails)
-* Alter commit messages using a Markov chain model trained on a corpus of good commit messages
-* Rewriting commit history
+- Change authors
+- Change commit messages
+- Change commit dates
+- Randomize commit details automatically
+- Cleanup old Git refs after rewriting
 
-The tool is particularly useful for preparing repositories for public sharing, ensuring that sensitive information such as author identities and commit messages are anonymized.
+It’s mainly designed for anonymizing or faking commits for testing, demos, or academic projects.
 
 Or if you just are messing around.
 
@@ -16,9 +18,33 @@ This project uses [Faker](https://github.com/joke2k/faker) to brilliantly genera
 
 ## Features
 
-* **Change Authors**: Randomize or manually edit commit authorship across the entire repository history.
-* **Change Commit Messages**: Generate new commit messages using a Markov chain model trained on a dataset of high-quality commit messages.
-* **Safe Rewriting**: Utilizes `git filter-branch` to rewrite commit history, ensuring that changes are applied consistently and can be reverted if necessary.
+1. **Change Authors**
+
+   - Randomize names and emails using [Faker](https://faker.readthedocs.io/).
+   - Or manually specify new names and emails per author.
+   - Rewrites all commits with a safe backup.
+
+2. **Change Commit Messages**
+
+   - Generates random commit messages using a `good_commits.txt` corpus.
+   - Supports Markov-chain-based message generation via [markovify](https://github.com/jsvine/markovify).
+   - Spinner shows progress during long rewrite operations.
+
+3. **Change Commit Dates**
+
+   - Offset commits by a specified number of years into the past or future.
+   - Randomizes day/month/time within the offset range.
+   - Interactive prompts guide you through base offset and range selection.
+
+4. **Cleanup Original References**
+
+   - Optionally deletes `refs/original` and runs Git garbage collection.
+   - Keeps repo clean for consecutive `fakit` operations.
+
+5. **Spinner Feedback**
+
+   - Long operations like rewriting commits now show a simple ncurses-style spinner.
+   - Smooth progress indication without flooding the terminal.
 
 ---
 
@@ -83,8 +109,17 @@ To start the interactive prompts:
 fakit /path/to/repo
 ```
 
-Follow the prompts to either randomize authorship or manually edit author details.
-Alternatively rewrite commit messages using a Markov chain model trained on a dataset of generally acceptable commit messages.
+You’ll be prompted to choose an operation:
+
+```bash
+Choose operation:
+1. Change authors
+2. Change commit messages
+3. Change commit dates
+Select [1/2/3]:
+```
+
+Follow the interactive prompts for each operation.
 
 ---
 

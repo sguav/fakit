@@ -4,6 +4,7 @@ import markovify
 import os
 import random
 import sys
+import tempfile
 from collections import OrderedDict
 from faker import Faker
 
@@ -33,11 +34,9 @@ def get_commit_markov_model():
         nltext = f.read()
     return markovify.NewlineText(nltext)
 
-
 def generate_random_git_message():
     global commit_msg_model
     return commit_msg_model.make_sentence() or "Fix minor typos"
-
 
 def change_authors(repo, commits):
     authors = OrderedDict()
@@ -77,33 +76,49 @@ fi
 
     print("\nRewriting commits... (destructive, make a backup!)")
     repo.git.filter_branch(
+        "-f",
         "--env-filter", env_filter_script,
         "--tag-name-filter", "cat", "--", "--all"
     )
     print("\nDone. Remember to force-push if it's a remote repo!")
 
-def change_messages(repo):
+def change_messages(repo, commits):
     print("Randomizing commit messages using good_commits.txt...\n")
 
+    # Resolve absolute path to good_commits.txt
     base_dir = os.path.dirname(os.path.abspath(__file__))
     commits_file = os.path.join(base_dir, "good_commits.txt")
     if not os.path.exists(commits_file):
         print(f"Error: {commits_file} not found.")
         sys.exit(1)
 
-    # Pass the absolute path explicitly to the inline Python
-    msg_filter_script = (
-        f"python3 -c 'import markovify; "
-        f"text=open(r\"{commits_file}\",encoding=\"utf-8\").read(); "
-        f"m=markovify.NewlineText(text); "
-        f"import sys; print(m.make_sentence() or \"Update project files\")'"
-    )
+    # Pre-generate a random commit message for each commit
+    commit_messages = {c.hexsha: generate_random_git_message() for c in commits}
 
+    # Write a temporary msg-filter shell script (in the system temp directory) that prints the new message per SHA
+    with tempfile.NamedTemporaryFile("w", delete=False, suffix=".sh") as tmp_file:
+        tmp_file.write("#!/bin/sh\n")
+        tmp_file.write("case \"$GIT_COMMIT\" in\n")
+        for sha, msg in commit_messages.items():
+            esc_msg = msg.replace('"', '\\"').replace('$', '\\$')
+            tmp_file.write(f"{sha}*) echo \"{esc_msg}\" ;;\n")
+        tmp_file.write("*) cat ;; esac\n")
+        msg_filter_path = tmp_file.name
+
+    os.chmod(msg_filter_path, 0o755)
+
+    print(f"Using temporary msg-filter script: {msg_filter_path}")
     print("\nRewriting commit messages... (destructive, make a backup!)")
     repo.git.filter_branch(
-        "--msg-filter", msg_filter_script,
-        "--tag-name-filter", "cat", "--", "--all"
+        "-f",
+        "--msg-filter", msg_filter_path,
+        "--tag-name-filter", "cat",
+        "--", "--all"
     )
+
+    # Optionally remove the temporary script
+    os.remove(msg_filter_path)
+
     print("\nDone. Remember to force-push if it's a remote repo!")
 
 def main():
@@ -127,7 +142,7 @@ def main():
     if choice == "1":
         change_authors(repo, commits)
     elif choice == "2":
-        change_messages(repo)
+        change_messages(repo, commits)
     else:
         print("Invalid choice. Exiting.")
 

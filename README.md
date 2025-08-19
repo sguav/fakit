@@ -4,11 +4,13 @@
 
 * Randomize commit authorship (names and emails)
 * Alter commit messages using a Markov chain model trained on a corpus of good commit messages
-* Rewriting commit history in a safe and reversible manner([GitHub][1])
+* Rewriting commit history
 
 The tool is particularly useful for preparing repositories for public sharing, ensuring that sensitive information such as author identities and commit messages are anonymized.
 
 Or if you just are messing around.
+
+This project uses [Faker](https://github.com/joke2k/faker) to brilliantly generate names and emails.
 
 ---
 
@@ -16,7 +18,7 @@ Or if you just are messing around.
 
 * **Change Authors**: Randomize or manually edit commit authorship across the entire repository history.
 * **Change Commit Messages**: Generate new commit messages using a Markov chain model trained on a dataset of high-quality commit messages.
-* **Safe Rewriting**: Utilizes `git filter-branch` to rewrite commit history, ensuring that changes are applied consistently and can be reverted if necessary.([Stack Overflow][2])
+* **Safe Rewriting**: Utilizes `git filter-branch` to rewrite commit history, ensuring that changes are applied consistently and can be reverted if necessary.
 
 ---
 
@@ -90,7 +92,7 @@ Alternatively rewrite commit messages using a Markov chain model trained on a da
 
 ### Running Tests
 
-To run the test suite:([GitHub][1])
+To run the test suite:
 
 ```bash
 pytest

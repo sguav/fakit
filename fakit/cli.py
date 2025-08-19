@@ -1,9 +1,12 @@
-import git
 import argparse
-import sys
+import git
+import markovify
+import os
 import random
-import string
+import sys
 from collections import OrderedDict
+from faker import Faker
+
 
 def list_commits(repo):
     commits = list(repo.iter_commits('--all'))
@@ -11,23 +14,37 @@ def list_commits(repo):
         print(f"{idx}: {c.hexsha[:8]} {c.author.name} <{c.author.email}> {c.summary}")
     return commits
 
-def random_string(length=6):
-    return ''.join(random.choices(string.ascii_lowercase, k=length))
+
+def make_email_from_name(set_name: str):
+    first_name, last_name = set_name.lower().split()
+    return f"{first_name}.{last_name}@{Faker().domain_name()}"
+
 
 def generate_random_author(old_name, old_email):
-    domain = old_email.split("@")[-1] if "@" in old_email else "example.com"
-    new_name = f"{random_string(5).capitalize()} {random_string(7).capitalize()}"
-    new_email = f"{random_string(8)}@{domain}"
+    new_name = Faker().name()
+    new_email = make_email_from_name(new_name)
     return new_name, new_email
 
+
+def get_commit_markov_model():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    commits_file = os.path.join(base_dir, "good_commits.txt")
+    with open(commits_file, encoding="utf-8") as f:
+        nltext = f.read()
+    return markovify.NewlineText(nltext)
+
+
+def generate_random_git_message():
+    global commit_msg_model
+    return commit_msg_model.make_sentence() or "Fix minor typos"
+
+
 def change_authors(repo, commits):
-    # Collect unique authors (preserve order)
     authors = OrderedDict()
     for c in commits:
         key = (c.author.name, c.author.email)
         authors[key] = None
 
-    # Ask for randomization
     randomize = input("Randomize author names/emails? [y/N]: ").strip().lower() == 'y'
 
     replacements = {}
@@ -41,7 +58,6 @@ def change_authors(repo, commits):
             new_email = input(f"  New email [{old_email}]: ").strip() or old_email
         replacements[(old_name, old_email)] = (new_name, new_email)
 
-    # Build a single --env-filter script
     env_filter_lines = []
     for (old_name, old_email), (new_name, new_email) in replacements.items():
         if (old_name, old_email) != (new_name, new_email):
@@ -59,13 +75,36 @@ fi
         print("No changes to apply. Exiting.")
         return
 
-    print("\nRewriting commits in a single pass... (destructive, make a backup!)")
+    print("\nRewriting commits... (destructive, make a backup!)")
     repo.git.filter_branch(
         "--env-filter", env_filter_script,
         "--tag-name-filter", "cat", "--", "--all"
     )
-    print("\nDone. Remember: force-push if it's a remote repo!")
+    print("\nDone. Remember to force-push if it's a remote repo!")
 
+def change_messages(repo):
+    print("Randomizing commit messages using good_commits.txt...\n")
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    commits_file = os.path.join(base_dir, "good_commits.txt")
+    if not os.path.exists(commits_file):
+        print(f"Error: {commits_file} not found.")
+        sys.exit(1)
+
+    # Pass the absolute path explicitly to the inline Python
+    msg_filter_script = (
+        f"python3 -c 'import markovify; "
+        f"text=open(r\"{commits_file}\",encoding=\"utf-8\").read(); "
+        f"m=markovify.NewlineText(text); "
+        f"import sys; print(m.make_sentence() or \"Update project files\")'"
+    )
+
+    print("\nRewriting commit messages... (destructive, make a backup!)")
+    repo.git.filter_branch(
+        "--msg-filter", msg_filter_script,
+        "--tag-name-filter", "cat", "--", "--all"
+    )
+    print("\nDone. Remember to force-push if it's a remote repo!")
 
 def main():
     parser = argparse.ArgumentParser(description="Fakit - Fake git repo automation tool")
@@ -82,9 +121,16 @@ def main():
 
     print("\nChoose operation:")
     print("1. Change authors")
-    choice = input("Select [1]: ").strip() or "1"
+    print("2. Change commit messages")
+    choice = input("Select [1/2]: ").strip() or "1"
 
     if choice == "1":
         change_authors(repo, commits)
+    elif choice == "2":
+        change_messages(repo)
     else:
         print("Invalid choice. Exiting.")
+
+
+global commit_msg_model
+commit_msg_model = get_commit_markov_model()

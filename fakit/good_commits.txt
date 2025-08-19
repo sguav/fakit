@@ -1,0 +1,591 @@
+Add src/include/catalog/README
+Fix self-deadlock during DROP SUBSCRIPTION.
+Refactor ReadMultiXactCounts() into GetMultiXactInfo()
+Remove useless pointer update in StatsShmemInit()
+Simplify relation_has_unique_index_for()
+Pathify RHS unique-ification for semijoin planning
+test_ddl_deparse: Rename test create_sequence_1 to create_sequence
+Remove unneeded header declarations in multixact.c
+Remove HASH_DEBUG output from dynahash.c
+Use elog(DEBUG4) for dynahash.c statistics output
+Fix missing "use Test::More" in Kerberos.pm.
+Detect buffer underflow in get_th()
+Move SQL-callable code related to multixacts into its own file
+meson: Move C99 test earlier
+Refactor init_params() in sequence.c to not use FormData_pg_sequence_data
+Remove md5() call from isolation test for CLUSTER and TOAST
+Update obsolete comments in ResultRelInfo struct.
+Add isolation test for TOAST value reuse during CLUSTER
+Fix typos in comments.
+Fix constant when extracting timestamp from UUIDv7.
+Fix git whitespace warning
+Add TAP tests for LDAP connection parameter lookup
+Fix invalid format string in HASH_DEBUG code
+Fix failing -D HASH_STATISTICS builds
+Add Asserts to validate prevbit values in bms_prev_member
+Add SQL test for TOAST value allocations on rewrite
+ci: Simplify ci-os-only handling
+ci: Per-repo configuration for manually trigger tasks
+Avoid including tableam.h and xlogreader.h in nbtree.h
+Don't leak memory during failure exit from SelectConfigFiles().
+Fix LSN format in debug message
+Fix compilation warning with SerializeClientConnectionInfo()
+Revert logical snapshot filename format change in SnapBuildSnapshotExists().
+Fix incorrect LSN format in comment.
+Grab the low-hanging fruit from forcing USE_FLOAT8_BYVAL to true.
+Add new feature for user authentication.
+Fix race condition in concurrent access.
+Refactor database connection pooling logic.
+Remove deprecated API calls in user service.
+Simplify error handling in payment processing.
+Optimize image loading for faster rendering.
+Test user registration flow with edge cases.
+Remove redundant logging in authentication module.
+Use environment variables for configuration settings.
+Fix broken links in documentation.
+Enhance security for password storage.
+Add unit tests for user profile updates.
+Improve performance of search functionality.
+Refactor notification system for better scalability.
+Remove unused CSS classes from stylesheets.
+Update README with installation instructions.
+Fix bug in email verification process.
+Add support for multiple languages in UI.
+Optimize database queries for user data retrieval.
+Improve accessibility features in the application.
+Fix layout issues on mobile devices.
+Add logging for API request and response.
+Refactor code to follow SOLID principles.
+Remove hardcoded values in configuration files.
+Update third-party libraries to latest versions.
+Fix memory leak in image processing module.
+Add integration tests for payment gateway.
+Improve error messages for user feedback.
+Refactor user settings management.
+Remove legacy code from user profile module.
+Optimize file upload process for large files.
+Fix incorrect date formatting in reports.
+Add caching for frequently accessed data.
+Improve UI responsiveness on slow networks.
+Refactor session management for better security.
+Remove unused variables from codebase.
+Fix bug in user permissions handling.
+Add support for OAuth2 authentication.
+Improve logging for debugging purposes.
+Refactor API endpoints for consistency.
+Remove unnecessary dependencies from project.
+Fix issues with user logout functionality.
+Add tests for new features in user module.
+Improve documentation for API usage.
+Refactor error handling in payment processing.
+Remove duplicate code in user service.
+Optimize loading times for dashboard.
+Fix issues with user profile image uploads.
+Add support for two-factor authentication.
+Improve performance of data export functionality.
+Refactor code for better readability.
+Remove outdated comments from codebase.
+Fix bugs in user registration validation.
+Add tests for edge cases in payment processing.
+Improve UI design for better user experience.
+Refactor notification preferences management.
+Remove unused assets from project.
+Fix issues with password reset functionality.
+Add support for user roles and permissions.
+Improve performance of search indexing.
+Refactor code to reduce complexity.
+Remove deprecated features from application.
+Fix bugs in user feedback submission.
+Add tests for user authentication flow.
+Improve error handling in API responses.
+Refactor user dashboard for better usability.
+Remove unnecessary API endpoints.
+Fix issues with data synchronization.
+Add support for user activity logging.
+Improve performance of data retrieval.
+Refactor code for better maintainability.
+Remove hardcoded URLs from application.
+Fix bugs in user profile editing.
+Add tests for user settings management.
+Improve documentation for setup process.
+Add src/include/catalog/README for catalog documentation.
+Prevent self-deadlock during DROP SUBSCRIPTION.
+Refactor ReadMultiXactCounts() into GetMultiXactInfo() for clarity.
+Remove redundant pointer update in StatsShmemInit().
+Simplify relation_has_unique_index_for() to reduce complexity.
+Pathify RHS unique-ification logic for semijoin planning.
+Rename create_sequence_1 test to create_sequence in test_ddl_deparse.
+Remove unused header declarations in multixact.c.
+Eliminate HASH_DEBUG output from dynahash.c.
+Use elog(DEBUG4) for statistics output in dynahash.c.
+Add missing use Test::More directive in Kerberos.pm.
+Detect buffer underflow condition in get_th().
+Move SQL-callable multixact functions into a dedicated file.
+Relocate Meson C99 check earlier in build sequence.
+Refactor init_params() in sequence.c to avoid using FormData_pg_sequence_data.
+Remove unnecessary md5() call from CLUSTER/TOAST isolation test.
+Update outdated comments in ResultRelInfo structure.
+Add isolation test for TOAST value reuse during CLUSTER.
+Correct typos in source comments.
+Fix incorrect constant when extracting timestamps from UUIDv7.
+Resolve git whitespace warning in source tree.
+Add TAP tests for LDAP connection parameter lookup.
+Correct invalid format string in HASH_DEBUG logging.
+Fix build errors when compiled with -D HASH_STATISTICS.
+Add assertions to validate prevbit values in bms_prev_member().
+Add SQL test for TOAST value allocation during table rewrite.
+Simplify CI ci-os-only handling logic.
+Add per-repo configuration for manual CI triggers.
+Reduce header dependencies by excluding tableam.h and xlogreader.h from nbtree.h.
+Prevent memory leak during failure exit from SelectConfigFiles().
+Correct LSN format string in debug output.
+Fix compiler warning in SerializeClientConnectionInfo().
+Revert logical snapshot filename format change in SnapBuildSnapshotExists().
+Correct LSN format in source comment.
+Remove obsolete code enforcing USE_FLOAT8_BYVAL = true.
+Implement feature for improved user authentication.
+Fix race condition in concurrent access handling.
+Refactor database connection pooling for reliability.
+Remove deprecated API calls in user services.
+Simplify error-handling logic in payment processing.
+Optimize image loading for improved render performance.
+Add tests covering edge cases in user registration flow.
+Remove redundant authentication logging statements.
+Use environment variables for configuration management.
+Correct broken documentation links.
+Improve security of password hashing and storage.
+Add unit tests for user profile update operations.
+Optimize search feature for faster query response.
+Refactor notification subsystem for scalability.
+Remove unused CSS classes from stylesheets.
+Update README with complete installation steps.
+Fix email verification logic to handle invalid tokens.
+Add multi-language support to the user interface.
+Improve database query performance for user data retrieval.
+Enhance accessibility features throughout the application.
+Correct layout issues in mobile viewports.
+Add request/response logging for API endpoints.
+Refactor codebase to conform to SOLID design principles.
+Eliminate hardcoded configuration values.
+Update project dependencies to latest secure versions.
+Fix memory leak in image processing routines.
+Add integration tests for payment gateway interactions.
+Improve error messaging to provide better user feedback.
+Refactor user settings management for clarity.
+Remove legacy profile module code.
+Optimize file uploads to handle large payloads efficiently.
+Correct date formatting in generated reports.
+Add caching for frequently requested user data.
+Improve UI responsiveness over low-bandwidth connections.
+Refactor session management to strengthen security.
+Remove unused variables throughout the codebase.
+Correct logic for user permission checks.
+Add OAuth2 authentication support.
+Improve debug logging to aid troubleshooting.
+Refactor API endpoints to ensure consistency.
+Remove unnecessary external dependencies.
+Correct issues with user logout flow.
+Add automated tests for new user module features.
+Improve API usage documentation.
+Refactor error-handling code in payment processing module.
+Remove duplicate logic in user services.
+Optimize dashboard load performance.
+Fix problems with profile image uploads.
+Add support for two-factor authentication.
+Improve performance of data export processes.
+Refactor codebase to enhance readability.
+Remove obsolete comments.
+Correct registration validation rules.
+Add test cases for payment processing edge conditions.
+Redesign UI for better usability and visual consistency.
+Refactor notification preferences to simplify updates.
+Remove unused static assets.
+Correct password reset flow to handle invalid requests.
+Add user roles and permissions management.
+Improve indexing performance for search results.
+Refactor code to lower cyclomatic complexity.
+Remove deprecated application features.
+Fix issues in user feedback submission.
+Add automated authentication flow tests.
+Improve API response error-handling logic.
+Redesign user dashboard for better navigation.
+Remove unused or undocumented endpoints.
+Correct data synchronization logic.
+Add user activity audit logging.
+Improve performance of high-volume data queries.
+Refactor code to improve maintainability.
+Remove hardcoded URLs from application modules.
+Correct profile editing behavior.
+Add automated tests for user settings management.
+Improve setup and configuration documentation.
+Refactor to enforce DRY coding practices.
+Remove unused utility functions.
+Correct notification delivery issues.
+Add user preference storage support.
+Improve image processing throughput.
+Refactor to increase code testability.
+Remove outdated project dependencies.
+Fix session management inconsistencies.
+Add automated tests for user role assignment.
+Improve user-facing error messages.
+Refactor performance-sensitive modules.
+Remove excess debug logging.
+Correct data validation routines.
+Add account recovery support.
+Improve bulk data import efficiency.
+Refactor module structure for logical organization.
+Remove deprecated libraries.
+Correct user profile display behavior.
+Add tests for user activity tracking.
+Improve API endpoint documentation.
+Refactor code to increase clarity.
+Remove unused imports.
+Correct registration confirmation handling.
+Add feedback rating support.
+Improve data processing performance.
+Refactor source for better logical structure.
+Remove outdated or unused features.
+Correct authentication flow inconsistencies.
+Add tests for permission management features.
+Improve error handling across user services.
+Refactor for runtime efficiency.
+Remove nonessential comments.
+Correct profile update workflow.
+Add notification feature support.
+Improve search performance.
+Refactor core modules for scalability.
+Remove deprecated methods.
+Correct session-handling defects.
+Add tests for user settings updates.
+Improve documentation for new user features.
+Refactor for long-term maintainability.
+Remove unused variables.
+Correct synchronization issues in user data.
+Add user account configuration options.
+Improve database query response times.
+Refactor source for code readability.
+Remove static configuration values.
+Correct user feedback submission logic.
+Add automated tests for authentication paths.
+Improve API error message consistency.
+Refactor source code for improved maintainability.
+Refactor authentication middleware for better error propagation.
+Remove redundant null checks in user profile service.
+Simplify file upload validation logic.
+Optimize database index for message search.
+Remove deprecated SSLv3 support from connection handler.
+Fix memory leak in session token generation.
+Eliminate unused dependencies in payment gateway module.
+Refactor API rate-limiting logic into dedicated class.
+Remove hardcoded API timeout values.
+Simplify CSS grid implementation for dashboard.
+Fix unsafe string concatenation in log exporter.
+Remove obsolete workaround for IE11 compatibility.
+Refactor cron job initialization for testability.
+Remove redundant permission checks in admin controller.
+Fix improper error swallowing in email service.
+Simplify third-party API response parsing.
+Remove unused encryption parameters in config.
+Refactor user activity tracking with strategy pattern.
+Remove legacy browser polyfills from bundle.
+Fix integer overflow in analytics counter.
+Optimize SQL query for friend list retrieval.
+Improve image compression algorithm efficiency.
+Precompute dashboard metrics during off-peak hours.
+Cache frequently accessed role permissions.
+Reduce memory footprint of WebSocket connections.
+Optimize frontend asset delivery with Brotli.
+Improve database connection reuse in pooling.
+Reduce DOM reflows in user profile editor.
+Lazy-load non-critical help documentation.
+Optimize CI pipeline for faster test execution.
+Parallelize data processing in report generator.
+Reduce Docker image size by multi-stage builds.
+Optimize geo-spatial index for location searches.
+Improve JIT compilation for hot code paths.
+Prevent redundant re-renders in notification component.
+Add stress test for concurrent user registrations.
+Fix flaky timezone handling in integration tests.
+Add unit tests for password strength validator.
+Improve error injection in payment failure tests.
+Add boundary value tests for age verification.
+Mock external SMS service in verification tests.
+Add concurrency test for shopping cart updates.
+Verify database rollback on failed transactions.
+Add chaos engineering test for service discovery.
+Test CSV export with large dataset edge cases.
+Add negative tests for invalid API pagination.
+Verify session expiration under load.
+Test backup restoration process automatically.
+Add accessibility regression test suite.
+Test database failover during batch processing.
+Fix XSS vulnerability in user feedback form.
+Enforce MFA for admin role elevation.
+Sanitize user input in SQL report builder.
+Rotate API keys automatically every 90 days.
+Add audit trail for permission changes.
+Fix insecure temporary file handling in importer.
+Harden CORS configuration for sensitive endpoints.
+Add brute-force protection for password reset.
+Encrypt sensitive fields at application layer.
+Validate JWT signatures with proper key rotation.
+Fix insecure cookie flags on authentication tokens.
+Add permission checks for profile picture deletion.
+Implement strict Content-Security-Policy headers.
+Fix path traversal vulnerability in document export.
+Add GDPR-compliant data anonymization hooks.
+Update API documentation with new rate limits.
+Add troubleshooting guide for network issues.
+Document migration path for deprecated endpoints.
+Add examples to webhook configuration docs.
+Clarify permission matrix in admin handbook.
+Update error code reference with new cases.
+Add screenshots to UI customization guide.
+Document performance tuning parameters.
+Fix incorrect examples in payment API docs.
+Add data flow diagrams for audit system.
+Update accessibility compliance documentation.
+Add troubleshooting section for common install errors.
+Document backup encryption procedures.
+Clarify multi-region deployment strategy.
+Update contributor onboarding checklist.
+Automate certificate renewal in Kubernetes.
+Parameterize database provisioning script.
+Add Grafana dashboard for queue latency.
+Fix resource leaks in deployment cleanup job.
+Standardize container logging format.
+Add alerts for memory exhaustion patterns.
+Automate DNS record updates during failover.
+Restructure Terraform modules for reusability.
+Add persistent storage for message queues.
+Fix inconsistent environment variable naming.
+Add network policy for service segmentation.
+Automate log rotation configuration.
+Standardize init scripts across distributions.
+Add health checks to sidecar containers.
+Fix timestamp desync in distributed tracing.
+Add partitioning to event history table.
+Fix index corruption detection in vacuum job.
+Optimize full-text search tokenization.
+Add foreign key constraints to audit tables.
+Fix TOAST storage inefficiency in JSONB columns.
+Implement point-in-time recovery tests.
+Add covering index for common report query.
+Fix sequence gaps after failed transactions.
+Add compression for archived monitoring data.
+Optimize B-tree traversal for range queries.
+Fix statistics collection for partial indexes.
+Add sharding metadata to query explainer.
+Fix deadlock in concurrent materialized view refresh.
+Add checksum verification to backup routine.
+Optimize varchar storage for small values.
+Add keyboard navigation to data tables.
+Improve contrast ratio for error messages.
+Fix focus trapping in modal dialogs.
+Add loading indicators for dashboard widgets.
+Simplify multi-step form progression.
+Fix touch target sizing on mobile filters.
+Add aria-live regions for dynamic updates.
+Improve form validation error positioning.
+Redesign notification system with priority levels.
+Add persistent sorting to user management.
+Fix color blindness issues in charts.
+Add progressive image loading for galleries.
+Improve tab order in account settings.
+Fix responsive behavior in data grid.
+Add descriptive alt text to all images.
+Add idempotency keys to payment API.
+Standardize error response format.
+Deprecate XML support in public endpoints.
+Add webhook signature verification.
+Extend OAuth2 scope for profile deletion.
+Version API endpoints consistently.
+Add OpenAPI specification generator.
+Fix pagination cursor serialization.
+Add ETag support for resource caching.
+Deprecate legacy authentication header.
+Add bulk operation support for user imports.
+Fix inconsistent timezone in event timestamps.
+Add rate limit headers to all responses.
+Validate content-type headers strictly.
+Add webhook delivery retry mechanism.
+Migrate user service to async/await pattern.
+Replace custom utils with lodash functions.
+Remove AngularJS legacy compatibility layer.
+Flatten nested callbacks in data importer.
+Replace fragile regex with parser library.
+Remove vendor prefixing from CSS build.
+Replace homegrown cache with Redis.
+Deprecate CoffeeScript build artifacts.
+Remove support for Python 2.7.
+Replace fat controller with domain services.
+Remove unused feature flags from config.
+Replace monolithic SDK with modular imports.
+Deprecate SOAP endpoints entirely.
+Remove legacy workarounds for Android 4.x.
+Replace custom date logic with moment-timezone.
+Fix setup violation in clock domain crossing module.
+Refactor ALU datapath for reduced critical path.
+Remove redundant flip-flops in power gating controller.
+Simplify state machine encoding in I2C controller.
+Optimize multiplier array for area reduction.
+Implement parameterized FIFO depth configuration.
+Fix bit-width mismatch in floating-point unit.
+Remove unused ports from USB 3.0 PHY interface.
+Add metastability hardening to reset synchronizer.
+Optimize memory BIST controller for test time.
+Fix hold violation in DDR interface logic.
+Refactor pipeline stall logic for better timing.
+Remove combinational loops in priority encoder.
+Add clock gating to idle state machines.
+Fix endianness conversion in DMA engine.
+Optimize barrel shifter for power efficiency.
+Add parameterized error correction code module.
+Fix synchronization error in multi-voltage domain.
+Remove unused legacy mode from PCIe controller.
+Add speculative execution to branch predictor.
+Add scoreboard for AXI4-Lite protocol checks.
+Fix phase jump in UVM test sequence.
+Refactor virtual sequence for reusability.
+Remove deprecated callbacks from monitor.
+Implement coverage-driven regression suite.
+Fix constraint randomization in packet generator.
+Add protocol checker for AMBA CHI.
+Update reference model for out-of-order responses.
+Fix memory leak in UVM component hierarchy.
+Add error injection tests for ECC module.
+Implement UVM register abstraction for new IP.
+Fix race condition in clock/reset agent.
+Add assertions for FIFO overflow protection.
+Refactor testbench for vertical reuse.
+Remove redundant checks from base test.
+Implement power-aware test sequences.
+Fix scoreboard comparison latency issue.
+Add protocol compliance tests for USB-PD.
+Update functional coverage for interrupt controller.
+Fix sequence arbitration in virtual sequencer.
+Fix multicycle path constraints for DSP blocks.
+Add false path constraints for test modes.
+Optimize placement for clock tree synthesis.
+Update power intent for UPF 3.0 compliance.
+Fix DRV violations in high-fanout nets.
+Add derived clock definitions for PLL outputs.
+Optimize scan chain reordering for test time.
+Fix max_transition violations in IO buffers.
+Add metal fill exclusion zones for analog IP.
+Update floorplan for hierarchical design.
+Fix antenna violations in top-level routing.
+Optimize clock gating cells for power savings.
+Add placement constraints for memory macros.
+Fix hold time on clock divider paths.
+Update SDC for multi-corner multi-mode analysis.
+Add shielding for sensitive analog nets.
+Optimize buffer tree for global reset net.
+Fix layer assignment for high-speed interfaces.
+Add boundary cell constraints for DFT.
+Update RC extraction settings for accuracy.
+Prove equivalence of optimized ALU implementation.
+Add connectivity checks for power switches.
+Verify clock domain crossing protocols.
+Prove deadlock freedom in NoC router.
+Fix counterexample in arbitration formal proof.
+Add reset sequence properties to FV testbench.
+Verify protocol compliance for AXI4-Stream.
+Prove safety properties in safety island.
+Fix convergence issues in FSM reachability.
+Add assume-guarantee constraints for top-level.
+Verify equivalence after clock gating insertion.
+Prove data integrity in ECC formal model.
+Fix abstraction model for memory controller.
+Add liveness properties to cache coherency.
+Verify security properties in trusted zone.
+Fix scan chain ordering for compression.
+Add at-speed test coverage for critical paths.
+Update ATPG patterns for transition faults.
+Fix test mode timing constraints.
+Insert test points for observability.
+Add logic BIST for embedded memories.
+Fix boundary scan cell mapping.
+Optimize test compression ratio.
+Add analog test bus connectivity.
+Fix hold time violations in scan mode.
+Update MBIST algorithms for yield.
+Add test mode for power-on reset sequence.
+Fix stuck-at coverage for analog interfaces.
+Insert test collar for 3rd-party IP.
+Update JTAG TAP controller for IEEE 1149.6.
+Fix power rail EM violations.
+Add state retention flops for sleep mode.
+Optimize power switch network resistance.
+Update power grid for IR drop hotspots.
+Fix isolation cell placement errors.
+Add dynamic voltage scaling controller.
+Optimize clock tree for power reduction.
+Fix leakage power in always-on domain.
+Update power models for accuracy.
+Add multi-voltage domain checks.
+Optimize level shifter placement.
+Fix short-circuit current in IO pads.
+Add power gating to peripheral modules.
+Update switching activity for peak power.
+Fix back-biasing control sequencing.
+Fix Tcl script for regression tracking.
+Add Python flow for coverage merging.
+Update Makefile for parallel synthesis.
+Fix constraint generation script.
+Add Jenkins pipeline for nightly RTL checks.
+Update LSF job submission parameters.
+Fix version control hooks for Linting.
+Add auto-waise for timing violations.
+Update reporting script for test metrics.
+Fix ECO script for metal layer changes.
+Add automated waiver file generation.
+Update DRC waiver management system.
+Fix library path setup for simulations.
+Add auto-tagging for release branches.
+Update dashboard for CI/CD monitoring.
+Update microarchitecture specification for cache.
+Fix typo in clocking architecture document.
+Add port map diagrams for new interface.
+Remove deprecated timing exceptions.
+Update verification plan for coverage closure.
+Add comments for complex state transitions.
+Fix hyperlinks in DFT methodology guide.
+Update power estimation spreadsheet.
+Add signal description to interface manual.
+Remove obsolete synthesis scripts.
+Update lint waiver justifications.
+Add constraints rationale document.
+Fix revision history in IP spec.
+Update tool version compatibility matrix.
+Add FAQ for common verification issues.
+Fix Synopsys VCS compilation flags.
+Update Cadence Innovus setup files.
+Add support for Verilator 5.0.
+Fix Questa UVM home path.
+Update SpyGlass rule waiver files.
+Add support for AWS compute instances.
+Fix license reservation script.
+Update Python virtual environment setup.
+Add Docker image for regression tests.
+Fix module path in synthesis script.
+Update SVN to Git migration guide.
+Add support for Siemens Tessent 2023.3.
+Fix library dependency graph.
+Update regression tracking database.
+Add ElasticSearch logging for simulations.
+Fix address map conflict in SoC fabric.
+Add clock reset group for new IP.
+Update system-level UVM testbench.
+Fix top-level connectivity for PCIe.
+Add power domain verification checks.
+Remove unused IP from synthesis list.
+Update pinmux configuration for boot mode.
+Fix interrupt mapping table.
+Add security firewall rules.
+Update memory map for DMA regions.
+Fix system controller wakeup sequence.
+Add clock frequency scaling hooks.
+Update pad ring for new package.
+Fix analog-digital boundary simulation.
+Add system-level power sequencing.
